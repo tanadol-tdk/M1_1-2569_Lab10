@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>ระบบส่งงาน HTML สำหรับนักเรียน</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; max-width: 500px; margin: auto; }
+        .result { margin-top: 20px; padding: 10px; background: #eef; display: none; }
+    </style>
+</head>
+<body>
+    <h2>ส่งงานไฟล์ HTML</h2>
+    <form id="uploadForm">
+        <input type="file" id="htmlFile" accept=".html" required><br><br>
+        <button type="submit">อัปโหลดและรับ Link</button>
+    </form>
+
+    <div id="result" class="result">
+        <p>อัปโหลดสำเร็จ! Link ผลงานของคุณคือ:</p>
+        <a id="fileLink" href="#" target="_blank"></a>
+    </div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fileInput = document.getElementById('htmlFile');
+            const formData = new FormData();
+            formData.append('htmlFile', fileInput.files[0]);
+
+            const response = await fetch('/upload', { method: 'POST', body: formData });
+            const data = await response.json();
+
+            if (data.success) {
+                const linkElem = document.getElementById('fileLink');
+                linkElem.href = data.url;
+                linkElem.innerText = data.url;
+                document.getElementById('result').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
